@@ -1,8 +1,11 @@
 {
-  "name": "pinakes",
+  "name": "@noebase/pinakes",
   "version": "0.0.1",
   "description": "Open knowledge packages for agents — vendored, versioned, provenance-signed.",
   "homepage": "https://pinakes.cc",
+  "publishConfig": {
+    "access": "public"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/noebase/pinakes.git"
