@@ -204,6 +204,8 @@
     .foot-row .left b { color: var(--ink); font-weight:700; }
     .foot-row .right { font-size:14.5px; }
     .foot-meta { margin-top: 22px; color: var(--ink-mut); font-size: 13px; display:flex; gap:14px; flex-wrap:wrap; }
+    .foot-origin { margin: 16px 0 0; color: var(--ink-mut); font-size: 13.5px; max-width: 64ch; line-height:1.55; }
+    .foot-origin .ipa { color: var(--ink); }
 
     .copybtn { background:transparent; border:none; color:var(--term-mut); cursor:pointer; font:inherit; font-size:12px; padding:4px 8px; border-radius:6px; margin-left:auto; }
     .copybtn:hover { color:var(--term-fg); background: rgba(255,255,255,.06); }
@@ -391,6 +393,7 @@
         <div class="left"><b>Pinakes</b> — an open standard for knowledge packages, vendored where agents already grep.</div>
         <div class="right">by <a href="https://noebase.com" rel="noopener">NoeBase</a> — where thinking grows.</div>
       </div>
+      <p class="foot-origin"><b style="color:var(--ink)">Pinakes</b> <span class="ipa mono">/ˈpɪn.ə.kiːz/</span> — named after the <a href="https://en.wikipedia.org/wiki/Pinakes" rel="noopener">Pinakes</a>, the catalogue of the Library of Alexandria: the first index of the world's knowledge.</p>
       <div class="foot-meta mono">
         <span>Apache-2.0</span>
         <span>·</span>

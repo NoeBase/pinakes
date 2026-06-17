@@ -2,6 +2,9 @@
 
 **Open knowledge packages for agents.** Like npm — but for knowledge, not code.
 
+*Pinakes* /ˈpɪn.ə.kiːz/ — named after the [Pinakes](https://en.wikipedia.org/wiki/Pinakes),
+the catalogue of the Library of Alexandria: the first index of the world's knowledge.
+
 Knowledge an AI agent needs — a method, a team's conventions, a domain primer — is
 **vendored into your repo as plain files**, so any agent reads it with its strongest
 tools (`grep`, `read`, `glob`). Versioned, provenance-signed, kept current by its source.
