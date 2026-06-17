@@ -32,7 +32,8 @@ Packages land in `./knowledge/` as plain Markdown your agent already greps.
 
 ## Status
 
-**Early — RFC stage.** The format is being designed in the open. Issues, ideas, and
+**Early — RFC stage.** The format is being designed in the open. The draft envelope and
+the honest list of open questions live in **[SPEC.md](./SPEC.md)**. Issues, ideas, and
 disagreement welcome.
 
 ## Substrate-independent
