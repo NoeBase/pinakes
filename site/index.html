@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pinakes — open knowledge packages for agents</title>
+  <meta name="description" content="Like npm — but for knowledge, not code. Pinakes vendors the knowledge an AI agent needs into your repo as plain files: versioned, provenance-signed, read with grep. An open, substrate-independent standard." />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#f7f5ef" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#16140f" media="(prefers-color-scheme: dark)" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://pinakes.cc" />
+  <meta property="og:title" content="Pinakes — open knowledge packages for agents" />
+  <meta property="og:description" content="Like npm — but for knowledge, not code. Knowledge vendored into your repo as plain files an agent reads with grep — versioned, provenance-signed, reviewable as a PR." />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="canonical" href="https://pinakes.cc/" />
+
+  <style>
+    /* Pinakes — single static page. No external requests (fonts/JS/CSS all local),
+       which is itself the thesis: knowledge, like this page, stays local. */
+    :root {
+      --bg:      #f7f5ef;
+      --bg-card: #fffdf8;
+      --ink:     #1a1813;
+      --ink-mut: #5b564b;
+      --line:    #e4ddcd;
+      --accent:  #ad461a;
+      --accent-2:#9a3d14;
+      --term-bg: #15130d;
+      --term-fg: #ede7d8;
+      --term-mut:#8d8975;
+      --term-grn:#8fb573;
+      --maxw: 1060px;
+      --r: 12px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:      #15130d;
+        --bg-card: #1d1a13;
+        --ink:     #efe9db;
+        --ink-mut: #a9a08b;
+        --line:    #2d2920;
+        --accent:  #e58a4e;
+        --accent-2:#eb9a63;
+        --term-bg: #0d0b07;
+        --term-fg: #ece6d7;
+        --term-mut:#857f6c;
+        --term-grn:#94ba78;
+      }
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *{ transition:none !important; animation:none !important; } }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.6;
+      font-size: 17px;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    .mono { font-family: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; text-underline-offset: 3px; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+
+    .wrap { max-width: var(--maxw); margin-inline: auto; padding-inline: clamp(20px, 5vw, 40px); }
+    section { padding-block: clamp(56px, 9vw, 104px); }
+    section + section { border-top: 1px solid var(--line); }
+
+    .skip { position:absolute; left:-9999px; top:0; background:var(--ink); color:var(--bg); padding:10px 16px; border-radius:8px; z-index:10; }
+    .skip:focus { left:12px; top:12px; }
+
+    .eyebrow {
+      font-size: 13px; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--accent-2); font-weight: 600; margin: 0 0 18px;
+    }
+
+    /* ---------- header / nav ---------- */
+    header.nav { border-bottom: 1px solid var(--line); position: sticky; top: 0; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(8px); z-index: 9; }
+    .nav-row { display:flex; align-items:center; justify-content:space-between; gap:16px; padding-block: 14px; }
+    .brand { display:flex; align-items:center; gap:10px; font-weight:700; font-size:18px; color:var(--ink); letter-spacing:-.01em; }
+    .brand:hover { text-decoration:none; }
+    .brand svg { display:block; }
+    .nav-links { display:flex; align-items:center; gap:8px; }
+    .nav-links a { color: var(--ink-mut); font-size:15px; padding:7px 11px; border-radius:8px; font-weight:500; }
+    .nav-links a:hover { color: var(--ink); background: color-mix(in srgb, var(--ink) 7%, transparent); text-decoration:none; }
+    .nav-links a.ghub { color: var(--ink); }
+    @media (max-width: 560px){ .nav-links a.hide-sm{ display:none; } }
+
+    /* ---------- badge ---------- */
+    .badge {
+      display:inline-flex; align-items:center; gap:9px;
+      font-size:13.5px; font-weight:500; color:var(--ink-mut);
+      border:1px solid var(--line); background:var(--bg-card);
+      padding:6px 13px; border-radius:999px;
+    }
+    .badge:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); text-decoration:none; color:var(--ink); }
+    .dot { width:7px; height:7px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
+
+    /* ---------- hero ---------- */
+    .hero { padding-top: clamp(48px, 8vw, 88px); }
+    .hero h1 {
+      font-size: clamp(40px, 7.2vw, 72px); line-height: 1.02; letter-spacing: -0.03em;
+      margin: 22px 0 0; font-weight: 800; max-width: 16ch;
+    }
+    .hero .lede { font-size: clamp(19px, 2.4vw, 23px); color: var(--ink-mut); margin: 20px 0 0; max-width: 46ch; }
+    .hero .lede b { color: var(--ink); font-weight: 600; }
+
+    .coreline {
+      margin: 36px 0 0; padding: 22px 26px; border-left: 3px solid var(--accent);
+      background: var(--bg-card); border-radius: 0 var(--r) var(--r) 0;
+      font-size: clamp(17px, 2vw, 19px); line-height: 1.5; max-width: 62ch;
+    }
+    .coreline b { color: var(--accent-2); font-weight: 700; }
+
+    .cta-row { display:flex; flex-wrap:wrap; gap:14px; align-items:center; margin-top: 34px; }
+    .btn {
+      display:inline-flex; align-items:center; gap:9px; font-weight:600; font-size:16px;
+      padding:13px 22px; border-radius:10px; border:1px solid transparent; cursor:pointer;
+    }
+    .btn-primary { background: var(--ink); color: var(--bg); }
+    .btn-primary:hover { background: var(--accent); text-decoration:none; }
+    .btn-ghost { background: transparent; color: var(--ink); border-color: var(--line); }
+    .btn-ghost:hover { border-color: var(--ink-mut); text-decoration:none; }
+
+    /* ---------- terminal ---------- */
+    .term {
+      background: var(--term-bg); border-radius: var(--r); overflow:hidden;
+      border:1px solid color-mix(in srgb, #000 22%, var(--term-bg));
+      box-shadow: 0 24px 50px -28px rgba(0,0,0,.5);
+    }
+    .term-bar { display:flex; align-items:center; gap:8px; padding:11px 15px; border-bottom:1px solid rgba(255,255,255,.07); }
+    .term-bar i { width:11px; height:11px; border-radius:50%; background:#3a362c; display:block; }
+    .term-bar i:nth-child(1){ background:#e06c5b; } .term-bar i:nth-child(2){ background:#e0b44e; } .term-bar i:nth-child(3){ background:#73c267; }
+    .term-bar span { margin-left:8px; color:var(--term-mut); font-size:12.5px; }
+    .term pre { margin:0; padding:20px 22px; overflow-x:auto; font-size:14.5px; line-height:1.85; color:var(--term-fg); }
+    .term .pr { color: var(--accent-2); }
+    .term .cmd { color: var(--term-fg); }
+    .term .c { color: var(--term-mut); }
+    .term .ok { color: var(--term-grn); }
+    @media (prefers-color-scheme: dark){ .term .pr{ color: var(--accent); } }
+
+    .hero-term { margin-top: 44px; }
+    .term-note { margin: 14px 2px 0; font-size: 14.5px; color: var(--ink-mut); }
+    .term-note code { color: var(--ink); background: color-mix(in srgb, var(--ink) 8%, transparent); padding: 2px 6px; border-radius: 5px; }
+
+    /* ---------- why / compare ---------- */
+    .lead-h { font-size: clamp(28px, 4vw, 40px); letter-spacing:-.025em; line-height:1.1; margin:0; font-weight:800; max-width: 22ch; }
+    .lead-p { color: var(--ink-mut); font-size: clamp(17px,2vw,19px); margin: 18px 0 0; max-width: 60ch; }
+
+    .compare { display:grid; grid-template-columns: 1fr 1fr; gap:18px; margin-top: 44px; }
+    @media (max-width: 720px){ .compare { grid-template-columns: 1fr; } }
+    .card {
+      background: var(--bg-card); border:1px solid var(--line); border-radius: var(--r); padding: 26px 26px 28px;
+    }
+    .card.is-pin { border-color: color-mix(in srgb, var(--accent) 38%, var(--line)); box-shadow: 0 1px 0 color-mix(in srgb, var(--accent) 30%, transparent); }
+    .card h3 { margin:0; font-size:15px; letter-spacing:.04em; text-transform:uppercase; display:flex; align-items:center; gap:9px; }
+    .card .tag { font-size:12px; font-weight:700; padding:3px 9px; border-radius:999px; letter-spacing:.03em; }
+    .tag-remote { color:var(--ink-mut); background: color-mix(in srgb, var(--ink) 8%, transparent); }
+    .tag-local  { color:#fff; background: var(--accent); }
+    @media (prefers-color-scheme: dark){ .tag-local{ color:#1a1813; } }
+    .card ul { list-style:none; margin:18px 0 0; padding:0; }
+    .card li { position:relative; padding-left:26px; margin:11px 0; color:var(--ink); font-size:15.5px; line-height:1.5; }
+    .card li::before { position:absolute; left:0; top:-1px; font-weight:700; }
+    .card.is-remote li::before { content:"–"; color:var(--ink-mut); }
+    .card.is-pin li::before { content:"›"; color:var(--accent); }
+    .card.is-remote li { color: var(--ink-mut); }
+
+    .envelope { margin-top: 40px; padding: 26px; border:1px dashed var(--line); border-radius: var(--r); background: color-mix(in srgb, var(--accent) 4%, var(--bg-card)); }
+    .envelope p { margin:0; max-width: 72ch; font-size: 16.5px; }
+    .envelope b { color: var(--accent-2); }
+
+    /* ---------- how ---------- */
+    .how-grid { display:grid; grid-template-columns: 1.05fr .95fr; gap:22px; margin-top: 44px; align-items:start; }
+    @media (max-width: 820px){ .how-grid { grid-template-columns: 1fr; } }
+    .how-cap { font-size:14px; color:var(--ink-mut); margin: 0 0 12px; font-weight:600; letter-spacing:.02em; }
+
+    /* ---------- substrate band ---------- */
+    .band { background: var(--bg-card); }
+    .band .lead-h { max-width: 26ch; }
+    .substrate { display:flex; flex-wrap:wrap; gap:10px; margin-top: 26px; }
+    .pill { border:1px solid var(--line); border-radius:999px; padding:9px 16px; font-size:15px; font-weight:500; }
+    .pill .mono { color: var(--accent-2); }
+
+    /* ---------- status ---------- */
+    .openq { display:flex; flex-wrap:wrap; gap:10px; margin-top: 26px; }
+    .openq span { font-size:14.5px; color:var(--ink-mut); border:1px solid var(--line); border-radius:8px; padding:7px 13px; }
+    .openq span b { color: var(--ink); font-weight:600; }
+    .status-cta { display:flex; flex-wrap:wrap; gap:14px; margin-top: 34px; }
+
+    /* ---------- footer ---------- */
+    footer { border-top:1px solid var(--line); padding-block: 40px; }
+    .foot-row { display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:18px; }
+    .foot-row .left { color: var(--ink-mut); font-size:14.5px; max-width: 44ch; }
+    .foot-row .left b { color: var(--ink); font-weight:700; }
+    .foot-row .right { font-size:14.5px; }
+    .foot-meta { margin-top: 22px; color: var(--ink-mut); font-size: 13px; display:flex; gap:14px; flex-wrap:wrap; }
+
+    .copybtn { background:transparent; border:none; color:var(--term-mut); cursor:pointer; font:inherit; font-size:12px; padding:4px 8px; border-radius:6px; margin-left:auto; }
+    .copybtn:hover { color:var(--term-fg); background: rgba(255,255,255,.06); }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+
+  <header class="nav">
+    <div class="wrap nav-row">
+      <a class="brand" href="/" aria-label="Pinakes home">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="3" y="4"  width="18" height="4.2" rx="1.6" fill="var(--accent)"/>
+          <rect x="3" y="10" width="18" height="4.2" rx="1.6" fill="var(--ink)" opacity=".55"/>
+          <rect x="3" y="16" width="12" height="4.2" rx="1.6" fill="var(--ink)" opacity=".28"/>
+        </svg>
+        Pinakes
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a class="hide-sm" href="#why">Why</a>
+        <a class="hide-sm" href="#how">How</a>
+        <a href="https://www.npmjs.com/package/@noebase/pinakes" rel="noopener">npm</a>
+        <a class="ghub" href="https://github.com/NoeBase/pinakes" rel="noopener">GitHub ↗</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- HERO -->
+    <section class="hero" aria-labelledby="h-hero">
+      <div class="wrap">
+        <a class="badge" href="https://github.com/NoeBase/pinakes" rel="noopener">
+          <span class="dot" aria-hidden="true"></span>
+          <span><b class="mono">RFC</b> · designed in the open — issues + ideas welcome</span>
+        </a>
+
+        <h1 id="h-hero">Open knowledge packages for agents.</h1>
+        <p class="lede">Like <b>npm</b> — but for <b>knowledge</b>, not code. The knowledge an
+          AI agent needs — a method, a team's conventions, a domain primer — <b>vendored into
+          your repo as plain files</b>, read with the agent's strongest tools:
+          <span class="mono">grep</span>, <span class="mono">read</span>, <span class="mono">glob</span>.</p>
+
+        <p class="coreline">Code has <b>git</b>, then <b>npm</b>. Knowledge has no git — so Pinakes
+          is the <b>npm without one</b>: a thin open envelope around free content, vendored where
+          agents already grep.</p>
+
+        <div class="cta-row">
+          <a class="btn btn-primary" href="https://github.com/NoeBase/pinakes" rel="noopener">View the RFC on GitHub →</a>
+          <a class="btn btn-ghost" href="#how">See how it works</a>
+        </div>
+
+        <div class="term hero-term" aria-label="Terminal example">
+          <div class="term-bar"><i></i><i></i><i></i><span class="mono">agent shell</span>
+            <button class="copybtn mono" type="button" data-copy="pin add github:acme/team-handbook">copy</button>
+          </div>
+<pre class="mono"><span class="pr">$</span> <span class="cmd">pin add github:acme/team-handbook</span>
+<span class="ok">✓</span> vendored 4 files → <span class="cmd">./knowledge/team-handbook/</span>  <span class="c">(provenance verified)</span>
+<span class="pr">$</span> <span class="cmd">grep -ri "deploy on friday" knowledge/</span>
+<span class="c">knowledge/team-handbook/conventions.md:  Never deploy on Friday. See incident #44.</span></pre>
+        </div>
+        <p class="term-note">One <code>grep</code> — and the agent cross-references the team's
+          rule against your actual code. No server round-trip. Offline. Diffable.</p>
+      </div>
+    </section>
+
+    <!-- WHY -->
+    <section id="why" aria-labelledby="h-why">
+      <div class="wrap">
+        <p class="eyebrow">Why local beats remote</p>
+        <h2 class="lead-h" id="h-why">Context7 and RAG keep knowledge remote. Pinakes makes it native.</h2>
+        <p class="lead-p">A remote lookup is one chunk per call, fetched on demand, never part of
+          the agent's working set. Vendored knowledge sits <b>in the repo</b> — so the agent reasons
+          over it the same way it reasons over your code.</p>
+
+        <div class="compare">
+          <div class="card is-remote">
+            <h3><span class="tag tag-remote">Remote</span> Context7 · RAG</h3>
+            <ul>
+              <li>Lives behind a server — one lookup, one chunk per call</li>
+              <li>Never enters the agent's working set or its grep</li>
+              <li>Can't be diffed against your code or reviewed as a PR</li>
+              <li>Online-only; opaque about what version answered</li>
+            </ul>
+          </div>
+          <div class="card is-pin">
+            <h3><span class="tag tag-local">Local</span> Pinakes</h3>
+            <ul>
+              <li>Vendored into your repo as plain Markdown files</li>
+              <li>Cross-referenced against real code in a single <span class="mono">grep</span></li>
+              <li>Offline, diffable, reviewable as a pull request</li>
+              <li>Versioned &amp; provenance-signed — you see its source</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="envelope">
+          <p>There is no universal substrate for knowledge the way <b>git</b> is for code —
+            knowledge is irreducibly multi-representational (prose, graph, table). So Pinakes
+            standardizes <b>only a thin envelope</b> — manifest, versioning, provenance — and
+            leaves the <b>content free</b>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOW -->
+    <section id="how" aria-labelledby="h-how">
+      <div class="wrap">
+        <p class="eyebrow">How it works</p>
+        <h2 class="lead-h" id="h-how">Four commands. Plain files where agents already look.</h2>
+        <p class="lead-p">Track knowledge packages like dependencies — add, update, verify — and
+          they land as Markdown in <span class="mono">./knowledge/</span>.</p>
+
+        <div class="how-grid">
+          <div>
+            <p class="how-cap mono">~ the CLI (preview)</p>
+            <div class="term" aria-label="CLI commands">
+              <div class="term-bar"><i></i><i></i><i></i><span class="mono">pin</span></div>
+<pre class="mono"><span class="pr">$</span> <span class="cmd">pin add github:acme/team-decisions</span>   <span class="c"># vendor straight from git</span>
+<span class="pr">$</span> <span class="cmd">pin add team-decisions</span>               <span class="c"># …or by name, via the registry</span>
+<span class="pr">$</span> <span class="cmd">pin update</span>                           <span class="c"># keep tracked packages current</span>
+<span class="pr">$</span> <span class="cmd">pin verify</span>                           <span class="c"># check provenance + integrity</span></pre>
+            </div>
+          </div>
+          <div>
+            <p class="how-cap mono">~ what lands in your repo</p>
+            <div class="term" aria-label="Vendored file layout">
+              <div class="term-bar"><i></i><i></i><i></i><span class="mono">your-repo/</span></div>
+<pre class="mono">your-repo/
+├─ src/<span class="c">…</span>
+├─ <span class="cmd">knowledge/</span>
+│  ├─ team-decisions/
+│  │  ├─ <span class="ok">pinakes.json</span>     <span class="c"># the envelope</span>
+│  │  ├─ conventions.md
+│  │  └─ decisions.md
+│  └─ domain-primer/
+│     └─ glossary.md
+└─ package.json</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SUBSTRATE BAND -->
+    <section class="band" aria-labelledby="h-band">
+      <div class="wrap">
+        <p class="eyebrow">An open standard — not a product</p>
+        <h2 class="lead-h" id="h-band">Substrate-independent. Apache-2.0. No gatekeeper.</h2>
+        <p class="lead-p">Pinakes is a format, openly licensed. Publish a package from anywhere:</p>
+        <div class="substrate">
+          <span class="pill">a <span class="mono">bare Markdown folder</span></span>
+          <span class="pill">a <span class="mono">git repo</span></span>
+          <span class="pill">a <span class="mono">NoeBase Space</span></span>
+        </div>
+        <p class="lead-p" style="margin-top:24px">NoeBase is the first <b>reference host</b> — never the gatekeeper. The envelope belongs to everyone who implements it.</p>
+      </div>
+    </section>
+
+    <!-- STATUS / RFC -->
+    <section id="status" aria-labelledby="h-status">
+      <div class="wrap">
+        <p class="eyebrow">Status</p>
+        <h2 class="lead-h" id="h-status">Early — RFC stage. Being designed in the open.</h2>
+        <p class="lead-p">The envelope is real but not frozen. These are the open questions on the
+          table right now — disagreement is welcome:</p>
+        <div class="openq" role="list">
+          <span role="listitem"><b>Unit taxonomy</b> — what counts as a package</span>
+          <span role="listitem"><b>Versioning semantics</b> — what a bump means for prose</span>
+          <span role="listitem"><b>Provenance &amp; signing</b> — trust without a registry</span>
+          <span role="listitem"><b>Registry resolution</b> — name → source</span>
+        </div>
+        <div class="status-cta">
+          <a class="btn btn-primary" href="https://github.com/NoeBase/pinakes" rel="noopener">Read &amp; shape the RFC →</a>
+          <a class="btn btn-ghost" href="https://www.npmjs.com/package/@noebase/pinakes" rel="noopener">@noebase/pinakes on npm</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer aria-labelledby="h-foot">
+    <div class="wrap">
+      <h2 id="h-foot" class="sr-only" style="position:absolute;left:-9999px">About</h2>
+      <div class="foot-row">
+        <div class="left"><b>Pinakes</b> — an open standard for knowledge packages, vendored where agents already grep.</div>
+        <div class="right">by <a href="https://noebase.com" rel="noopener">NoeBase</a> — where thinking grows.</div>
+      </div>
+      <div class="foot-meta mono">
+        <span>Apache-2.0</span>
+        <span>·</span>
+        <span>pinakes.cc</span>
+        <span>·</span>
+        <a href="https://github.com/NoeBase/pinakes" rel="noopener">github.com/NoeBase/pinakes</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Progressive enhancement only: copy buttons. Page is fully functional without JS.
+    document.querySelectorAll('.copybtn').forEach(function (b) {
+      b.addEventListener('click', function () {
+        var text = b.getAttribute('data-copy');
+        if (!navigator.clipboard) return;
+        navigator.clipboard.writeText(text).then(function () {
+          var prev = b.textContent; b.textContent = 'copied'; b.disabled = true;
+          setTimeout(function () { b.textContent = prev; b.disabled = false; }, 1400);
+        });
+      });
+    });
+  </script>
+</body>
+</html>
