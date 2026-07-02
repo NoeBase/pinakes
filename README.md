@@ -1,6 +1,7 @@
 # Pinakes
 
-**Open knowledge packages for agents.** Like npm — but for knowledge, not code.
+**Open knowledge packages for agents.** Versioned, provenance-signed, vendored into your
+repo — installs like a package, reads like your own docs.
 
 *Pinakes* /ˈpɪn.ə.kiːz/ — named after the [Pinakes](https://en.wikipedia.org/wiki/Pinakes),
 the catalogue of the Library of Alexandria: the first index of the world's knowledge.
@@ -9,8 +10,9 @@ Knowledge an AI agent needs — a method, a team's conventions, a domain primer 
 **vendored into your repo as plain files**, so any agent reads it with its strongest
 tools (`grep`, `read`, `glob`). Versioned, provenance-signed, kept current by its source.
 
-> Code has git, then npm. Knowledge has no git — so Pinakes is the npm without one:
-> a thin open envelope around free content, vendored where agents already grep.
+> Agent knowledge already lives as files in the repo — CLAUDE.md, AGENTS.md, rules folders —
+> copied by hand, drifting silently. Pinakes keeps the form and adds what it lacks:
+> **versioning, provenance, freshness** — a lockfile for the knowledge your agents read.
 
 ## Why
 
@@ -38,6 +40,10 @@ Packages land in `./knowledge/` as plain Markdown your agent already greps.
 **Early — RFC stage.** The format is being designed in the open. The draft envelope and
 the honest list of open questions live in **[SPEC.md](./SPEC.md)**. Issues, ideas, and
 disagreement welcome.
+
+The `pin` CLI above is a **design preview** — it does not ship yet
+([`@noebase/pinakes` 0.0.1](https://www.npmjs.com/package/@noebase/pinakes) is a name
+reservation). Format first; the reference CLI follows the RFC.
 
 ## Substrate-independent
 
